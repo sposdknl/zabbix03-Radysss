@@ -37,3 +37,20 @@ HostMetadata=SPOS
 systemctl restart zabbix-agent2
 ```
 ...
+
+### Úpravy v config
+UNIQUE_HOSTNAME="ubuntu-$(uuidgen)"
+SHORT_HOSTNAME=$(echo $UNIQUE_HOSTNAME | cut -d'-' -f1,2),
+...
+cat <<EOF | sudo tee -a /etc/zabbix/zabbix_agent2.conf
+
+Hostname=$SHORT_HOSTNAME
+Server=192.168.1.2
+ServerActive=192.168.1.2
+HostMetadata=SPOS
+Timeout=30
+EOF
+
+### Upravy v Vagrantfile
+# Interní síť (Zabbix appliance síť)
+        ubuntu.vm.network "private_network", ip: "192.168.1.3", virtualbox__intnet: true
